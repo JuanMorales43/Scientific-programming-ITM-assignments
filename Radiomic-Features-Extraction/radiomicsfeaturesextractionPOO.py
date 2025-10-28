@@ -72,6 +72,6 @@ class RadiomicsFeatureExtractor:
 
 
 if __name__ == "__main__":
-    input_folder = "/mnt/Datos/05-CMMD_Depurado/CMMD_MSC"
+    input_folder = "/mnt/Datos/05-CMMD_Depurado/CMMD_MSC" # Para cambiar esto debo subir toda la base de datos
     extractor = RadiomicsFeatureExtractor(input_folder)
     extractor.run()
