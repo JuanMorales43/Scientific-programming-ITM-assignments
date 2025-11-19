@@ -1,0 +1,61 @@
+import os
+import pandas as pd
+from radiomics import featureextractor
+from pathlib import Path
+
+input_folder = "/mnt/Datos/05-CMMD_Depurado/CMMD_MSC"
+
+params = {
+    'binWidth': 10,
+    'resampledPixelSpacing': None,
+    'interpolator': 'sitkBSpline',
+    'normalize': False,
+    'enableCExtensions': True,
+}
+
+extractor = featureextractor.RadiomicsFeatureExtractor(**params)
+
+extractor.enableFeatureClassByName('shape2D')
+extractor.enableFeatureClassByName('firstorder')
+extractor.enableFeatureClassByName('glcm')
+extractor.enableFeatureClassByName('glrlm')
+extractor.enableFeatureClassByName('glszm')
+extractor.enableFeatureClassByName('gldm')
+extractor.enableFeatureClassByName('ngtdm')
+
+patient_ids = []
+
+for patient_id in os.listdir(input_folder):
+    patient_ids.append(patient_id)
+
+imgs_path = []
+segs_path = []
+
+for patient_id in patient_ids:
+    seg_path = os.path.join(input_folder, patient_id, "seg", "mask")
+    img_path = os.path.join(input_folder, patient_id, "img")
+    if not (os.path.isdir(seg_path) and os.path.isdir(img_path)):
+        continue
+
+    seg_files = [f for f in os.listdir(seg_path) if f.endswith('.tiff')]
+    img_files = set(os.listdir(img_path))
+
+    for seg_file in seg_files:
+        base_name = seg_file.replace('_mask.tiff', '')
+        img_file = f"{base_name}.tiff"
+        if img_file in img_files:
+            imgs_path.append(os.path.join(img_path, img_file))
+            segs_path.append(os.path.join(seg_path, seg_file))
+
+all_features = []
+for img, seg in zip(imgs_path, segs_path):
+    print(f"Processing image: {img} with mask: {seg}")
+    ID = Path(img).parts[-3]
+    result = extractor.execute(img, seg, label=255)
+    features = {k: v for k, v in result.items() if 'diagnostics' not in k}
+    features['PatientID'] = ID
+    all_features.append(features)
+
+df = pd.DataFrame(all_features)
+df.to_csv("radiomics_features.csv", index=False)
+print("Features extracted and saved to radiomics_features.csv")

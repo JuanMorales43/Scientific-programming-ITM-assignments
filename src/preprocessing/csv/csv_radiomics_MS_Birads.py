@@ -1,0 +1,44 @@
+import pandas as pd
+
+csv_subtype  = "/mnt/Datos/05-CMMD_Depurado/CSV/CMMD_clinicaldata_revision_clean.csv"
+csv_radiomics= "/mnt/Datos/05-CMMD_Depurado/CSV/radiomics_features.csv"
+csv_birads   = "/mnt/Datos/05-CMMD_Depurado/CSV/TOMPEI-CMMD_imaging_diagnosis_details.csv"
+csv_output   = "/mnt/Datos/05-CMMD_Depurado/CSV/radiomics_merged.csv"
+
+# Leer archivos
+df_radiomics = pd.read_csv(csv_radiomics, dtype=str)
+df_subtype   = pd.read_csv(csv_subtype, dtype=str)
+df_birads    = pd.read_csv(csv_birads, dtype=str)
+
+# (Opcional pero recomendado) normalizar IDs para evitar no-coincidencias
+df_radiomics["PatientID"] = df_radiomics["PatientID"].astype(str).str.strip().str.upper()
+df_subtype["ID"]          = df_subtype["ID1"].astype(str).str.strip().str.upper()
+df_birads["ID"]           = df_birads["ID"].astype(str).str.strip().str.upper()
+
+# Unir radiomics con subtype
+df_merged = df_radiomics.merge(
+    df_subtype[['ID', 'classification', 'subtype']].drop_duplicates('ID'),
+    left_on='PatientID', right_on='ID', how='left'
+)
+
+# Unir con birads (los sufijos crean classification_cmmd y classification_tompei)
+df_merged = df_merged.merge(
+    df_birads[['ID', 'classification', 'BI-RADS']].drop_duplicates('ID'),
+    left_on='PatientID', right_on='ID', how='left', suffixes=('_cmmd', '_tompei')
+)
+
+# Usar el ID de subtype como identificador principal
+df_merged['ID'] = df_merged['ID_cmmd']
+
+# Eliminar columnas de PatientID y IDs extra
+df_merged.drop(columns=['PatientID', 'ID_cmmd', 'ID_tompei'], inplace=True)
+
+# Reordenar columnas al inicio
+cols_inicio = ['ID', 'classification_cmmd', 'classification_tompei',  'subtype', 'BI-RADS']
+cols_inicio = [c for c in cols_inicio if c in df_merged.columns]  # por si acaso
+cols_restantes = [c for c in df_merged.columns if c not in cols_inicio]
+df_merged = df_merged[cols_inicio + cols_restantes]
+
+# Guardar CSV
+df_merged.to_csv(csv_output, index=False)
+print(f"CSV generado en: {csv_output}")
