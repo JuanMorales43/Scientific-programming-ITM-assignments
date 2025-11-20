@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
 from sklearn.decomposition import PCA
 from scipy.spatial.distance import pdist, squareform
 from sklearn.metrics import silhouette_score, silhouette_samples

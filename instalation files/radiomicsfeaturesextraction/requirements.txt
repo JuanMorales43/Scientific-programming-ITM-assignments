@@ -1,0 +1,27 @@
+Bottleneck @ file:///croot/bottleneck_1731058641041/work
+docopt==0.6.2
+imageio==2.37.0
+lazy_loader==0.4
+mkl-service==2.4.0
+mkl_fft @ file:///io/mkl313/mkl_fft_1730824109137/work
+mkl_random @ file:///io/mkl313/mkl_random_1730823916628/work
+networkx==3.2.1
+numexpr @ file:///croot/numexpr_1730215937391/work
+numpy==1.26.4
+packaging==25.0
+pandas @ file:///home/task_175982151591391/conda-bld/pandas_1759822246465/work/dist/pandas-2.3.3-cp39-cp39-linux_x86_64.whl#sha256=46f49f8c0e38edb70c0c31fa0bcb595d56fee69beeb19b55154de62090265ed3
+pillow==11.3.0
+pykwalify==1.8.0
+pyradiomics==3.1.0
+python-dateutil @ file:///croot/python-dateutil_1716495738603/work
+pytz @ file:///croot/pytz_1752135852232/work
+PyWavelets==1.6.0
+ruamel.yaml==0.18.15
+ruamel.yaml.clib==0.2.14
+scikit-image==0.24.0
+scipy==1.13.1
+simpleitk==2.5.2
+six @ file:///croot/six_1744271502820/work
+tifffile==2024.8.30
+trimesh==4.8.3
+tzdata @ file:///croot/python-tzdata_1746123641790/work
