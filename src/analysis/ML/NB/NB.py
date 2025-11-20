@@ -20,18 +20,21 @@ from sklearn.preprocessing import StandardScaler
 # ==========================
 # 0. Carpeta de salida
 # ==========================
-output_dir = "NB"
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
+output_dir = os.path.join(REPO_ROOT,"results", "ML", "NB")
+csv_dir = os.path.join (REPO_ROOT, "results", "csv")
 os.makedirs(output_dir, exist_ok=True)
 
 # ==========================
 # 1. Cargar datos
 # ==========================
-ruta_csv_radiomics = "/media/imagenesmedicas/DATA1/01-ImagenesMedicas-US1/08-MasterCamilo/05-CMMD_Depurado/CSV/radiomics_merged.csv"
-ruta_csv_BN = "/media/imagenesmedicas/DATA1/01-ImagenesMedicas-US1/08-MasterCamilo/05-CMMD_Depurado/Codes/visualization_codes/distance/BN_cercanos.csv"
-ruta_csv_TN = "/media/imagenesmedicas/DATA1/01-ImagenesMedicas-US1/08-MasterCamilo/05-CMMD_Depurado/Codes/visualization_codes/distance/TN_cercanos.csv"
+ruta_csv_radiomics = os.path.join (csv_dir, "radiomics_merged.csv")
+ruta_csv_BN = os.path.join (csv_dir, "BN_cercanos.csv")
+ruta_csv_TN = os.path.join (csv_dir, "TN_cercanos.csv")
 
 # ⚠️ Ajusta esta ruta si tu splits.csv está en otro sitio
-ruta_splits = "/media/imagenesmedicas/DATA1/01-ImagenesMedicas-US1/08-MasterCamilo/06 - Linea base/ML/splits.csv"
+ruta_splits = os.path.join (csv_dir, "splits.csv")
+
 
 df_radiomics = pd.read_csv(ruta_csv_radiomics)
 df_bn = pd.read_csv(ruta_csv_BN)

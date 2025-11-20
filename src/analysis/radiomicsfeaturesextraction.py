@@ -3,7 +3,10 @@ import pandas as pd
 from radiomics import featureextractor
 from pathlib import Path
 
-input_folder = "/mnt/Datos/05-CMMD_Depurado/CMMD_MSC"
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+input_folder = os.path.join (REPO_ROOT, "data", "processed")
+output_folder = os.path.join (REPO_ROOT, "results", "csv")
+out_csv_path = os.path.join (output_folder, "radiomics_features.csv")
 
 params = {
     'binWidth': 10,
@@ -57,5 +60,5 @@ for img, seg in zip(imgs_path, segs_path):
     all_features.append(features)
 
 df = pd.DataFrame(all_features)
-df.to_csv("radiomics_features.csv", index=False)
+df.to_csv(out_csv_path, index=False)
 print("Features extracted and saved to radiomics_features.csv")

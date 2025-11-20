@@ -9,8 +9,10 @@ from sklearn.impute import SimpleImputer
 # ==========================
 # Configuración
 # ==========================
-INPUT_CSV   = "/media/imagenesmedicas/DATA1/01-ImagenesMedicas-US1/08-MasterCamilo/05-CMMD_Depurado/CSV/radiomics_merged.csv"
-OUTPUT_CSV  = "radiomics_lasso_subset.csv"
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+csv_dir = os.path.join (REPO_ROOT, "results", "csv")
+INPUT_CSV   = os.path.join (csv_dir, "radiomics_merged.csv")
+OUTPUT_CSV  = os.path.join (csv_dir, "radiomics_lasso_subset.csv")
 TOP_K_FALLBACK = 20  # si LASSO no deja ninguna, conservar top-k por |coef|
 
 # ==========================

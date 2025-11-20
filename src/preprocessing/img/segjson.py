@@ -1,7 +1,10 @@
 import os, re, shutil
 
-input_folder = "/mnt/Datos/05-CMMD_Depurado/CMMD_MSC"
-input_folder_segmentations = "/mnt/Datos/04 - TOMPEI-CMMD/TOMPEI-CMMD_v01_20250123/TOMPEI-CMMD_v01_20250123"
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+
+input_folder = os.path.join(REPO_ROOT, "data", "processed")
+
+input_folder_segmentations = os.path.join(REPO_ROOT, "data", "raw", "TOMPEI-CMMD-Segmentations")
 
 # Mapa: ID de paciente -> nombre de carpeta en input_folder
 folder_dict = {

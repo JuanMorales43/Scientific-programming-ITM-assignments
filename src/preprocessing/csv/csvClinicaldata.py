@@ -1,10 +1,12 @@
 import os
 import pandas as pd
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
-input_folder = "/mnt/Datos/05-CMMD_Depurado/CMMD_MSC"
-excel_file = "/mnt/Datos/04 - TOMPEI-CMMD/TOMPEI-CMMD_clinical_data_v01_20250121.xlsx"
-output_csv_1 = "/mnt/Datos/05-CMMD_Depurado/TOMPEI-CMMD_imaging_diagnosis_details.csv"
-output_csv_2 = "/mnt/Datos/05-CMMD_Depurado/TOMPEI-CMMD_lesion_details.csv"
+input_folder = os.path.join (REPO_ROOT, "data", "raw")
+route_output_folder = os.path.join (REPO_ROOT, "data", "raw csv")
+excel_file = os.path.join (REPO_ROOT, "data", "raw csv", "TOMPEI-CMMD_clinical_data_v01_20250121.xlsx")
+output_csv_1 = os.path.join (REPO_ROOT, "results", "csv","TOMPEI-CMMD_imaging_diagnosis_details.csv")
+output_csv_2 = os.path.join (REPO_ROOT, "results", "csv","TOMPEI-CMMD_lesion_details.csv")
 
 # Obtener nombres de carpetas existentes
 folder_names = set(os.listdir(input_folder))

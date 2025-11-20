@@ -6,9 +6,11 @@ from sklearn.decomposition import PCA
 from scipy.spatial.distance import pdist, squareform
 from sklearn.metrics import silhouette_score, silhouette_samples
 import os
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+csv_dir = os.path.join (REPO_ROOT, "results", "csv")
 
-ruta_csv = "/mnt/Datos/05-CMMD_Depurado/CSV/radiomics_merged.csv"
-ruta_salida = "/mnt/Datos/05-CMMD_Depurado/Codes/visualization_codes/PCA"
+ruta_csv = os.path.join (csv_dir, "radiomics_merged.csv")
+ruta_salida = os.path.join (REPO_ROOT, "results", "vis", "PCA")
 
 # Crear carpeta de salida si no existe
 os.makedirs(ruta_salida, exist_ok=True)

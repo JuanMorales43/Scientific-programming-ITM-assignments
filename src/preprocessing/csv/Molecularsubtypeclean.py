@@ -2,9 +2,11 @@ import os
 import pandas as pd
 import shutil
 
-route_input_folder  = "/mnt/Datos/03 - CMMD/manifest-1616439774456/CMMD"
-route_output_folder = "/mnt/Datos/05-CMMD_Depurado/CMMD_MSC"
-csv_file            = "/mnt/Datos/03 - CMMD/CMMD_clinicaldata_revision.xlsx"
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+
+route_input_folder  = os.path.join (REPO_ROOT, "data", "raw")
+route_output_folder = os.path.join (REPO_ROOT, "data", "raw csv")
+csv_file            = os.path.join (route_output_folder, "CMMD_clinicaldata_revision.xlsx")
 
 # Leer el archivo CSV/Excel
 df = pd.read_excel(csv_file)

@@ -2,7 +2,9 @@ import os
 import pydicom
 from PIL import Image
 
-input_folder = "/mnt/Datos/05-CMMD_Depurado/CMMD_MSC"
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+
+input_folder = os.path.join(REPO_ROOT, "data", "processed")
 
 view_dict = {
     "CC": "cranio-caudal",

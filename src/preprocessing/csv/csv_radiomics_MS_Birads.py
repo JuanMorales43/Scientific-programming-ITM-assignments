@@ -1,9 +1,12 @@
 import pandas as pd
+import os
 
-csv_subtype  = "/mnt/Datos/05-CMMD_Depurado/CSV/CMMD_clinicaldata_revision_clean.csv"
-csv_radiomics= "/mnt/Datos/05-CMMD_Depurado/CSV/radiomics_features.csv"
-csv_birads   = "/mnt/Datos/05-CMMD_Depurado/CSV/TOMPEI-CMMD_imaging_diagnosis_details.csv"
-csv_output   = "/mnt/Datos/05-CMMD_Depurado/CSV/radiomics_merged.csv"
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+
+csv_subtype  = os.path.join (REPO_ROOT, "results", "csv", "CMMD_clinicaldata_revision_clean.csv")
+csv_radiomics= os.path.join (REPO_ROOT, "results", "csv", "radiomics_features.csv")
+csv_birads   = os.path.join (REPO_ROOT, "results", "csv", "TOMPEI-CMMD_imaging_diagnosis_details.csv")
+csv_output   = os.path.join (REPO_ROOT, "results", "csv", "radiomics_merged.csv")
 
 # Leer archivos
 df_radiomics = pd.read_csv(csv_radiomics, dtype=str)

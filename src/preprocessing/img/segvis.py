@@ -2,7 +2,9 @@ import os
 import json
 from PIL import Image, ImageDraw
 
-input_folder = "/mnt/Datos/05-CMMD_Depurado/CMMD_MSC"
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+
+input_folder = os.path.join(REPO_ROOT, "data", "processed")
 
 for patient in os.listdir(input_folder):
     patient_path = os.path.join(input_folder, patient)
