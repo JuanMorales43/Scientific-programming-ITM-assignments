@@ -5,6 +5,30 @@ from sklearn.decomposition import PCA
 from scipy.spatial.distance import pdist, squareform
 from sklearn.metrics import silhouette_score, silhouette_samples
 import os
+
+"""
+Exploratory visualization of radiomic features using PCA and distance analysis.
+
+This script:
+- Loads the `radiomics_merged.csv` file from `results/csv`.
+- Selects the radiomic feature columns (`original_*`) and
+  the variables of interest (class, subtype, etc.).
+- Standardizes the features and applies Principal Component Analysis
+  (PCA) to reduce the dimensionality to 2 components.
+- Generates scatter plots (PC1 vs PC2) colored by class or molecular subtype
+  to explore the separability between groups (e.g., benign
+  vs triple negative).
+- Calculates distances (e.g., Mahalanobis or Euclidean) between cases and
+  constructs distance matrices to analyze the similarity between lesions.
+- Evaluates clustering indices such as the silhouette coefficient and produces
+  additional visualizations (heat maps, silhouette coloring, etc.).
+- Save the resulting figures in the `results/vis/PCA` folder.
+
+Its purpose is to provide a global visualization of the radiomic feature space
+and support the interpretation of separability
+between classes and molecular subtypes.
+"""
+
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 csv_dir = os.path.join (REPO_ROOT, "results", "csv")
 

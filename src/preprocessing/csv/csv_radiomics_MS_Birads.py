@@ -1,6 +1,28 @@
 import pandas as pd
 import os
 
+"""
+Combination of radiomics, molecular subtype, and BI-RADS in a single CSV.
+
+This script:
+- Loads three CSV files from `results/csv`:
+  - `radiomics_features.csv`: radiomic features extracted with PyRadiomics.
+  - `CMMD_clinicaldata_revision_clean.csv`: clinical and subtype information.
+  - `TOMPEI-CMMD_imaging_diagnosis_details.csv`: BI-RADS and diagnosis information.
+- Merges these DataFrames using patient identifiers
+  to obtain a single combined DataFrame.
+- Creates an `ID` column as the primary identifier (derived from the CMMD/TOMPEI IDs
+).
+- Remove redundant identification columns (`PatientID`, `ID_cmmd`,
+  `ID_tompei`) and reorder the columns so that they appear at the beginning:
+  `ID`, `classification_cmmd`, `classification_tompei`, `subtype`, `BI-RADS`.
+- Save the result in `results/csv/radiomics_merged.csv`.
+
+This combined file is used as the main input for
+feature selection and supervised classification analyses.
+"""
+
+
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
 csv_subtype  = os.path.join (REPO_ROOT, "results", "csv", "CMMD_clinicaldata_revision_clean.csv")

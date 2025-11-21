@@ -6,6 +6,28 @@ from sklearn.linear_model import LogisticRegressionCV
 from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
 
+"""
+Module for selecting radiomic features using LASSO.
+
+This script:
+- Loads the `radiomics_merged.csv` file from the `results/csv` folder.
+- Constructs a binary label vector (0 = benign, 1 = triple negative/TNBC)
+  from the `classification_cmmd` and `subtype` columns.
+- Extracts only the radiomic feature columns whose names
+  begin with `original_`.
+- Applies missing value imputation and standardization (z-score).
+- Fits a logistic regression with L1 penalty (LASSO) using cross-validation
+  to select the best regularization parameter.
+- Determine which features have a non-zero coefficient and, if none
+  are selected, keep the `TOP_K_FALLBACK` with the highest |coefficient|.
+- Generate a new DataFrame that keeps all non-radiomic columns
+  (ID, classification, etc.) and only the selected radiomic features.
+- Prints the resulting CSV to `stdout` and additionally saves it to
+  `radiomics_lasso_subset.csv` inside `results/csv`.
+
+The script is designed to be run from the console as part of the feature selection analysis flow in the scientific programming lab.
+"""
+
 # ==========================
 # Configuración
 # ==========================

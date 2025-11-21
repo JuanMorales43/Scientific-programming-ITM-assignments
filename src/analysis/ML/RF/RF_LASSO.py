@@ -17,6 +17,23 @@ from sklearn.metrics import (
 )
 from sklearn.preprocessing import StandardScaler
 
+"""
+Training and evaluation of Random Forest using features selected by LASSO.
+
+This script:
+- Loads the CSV reduced by LASSO (e.g., `radiomics_lasso_subset.csv`).
+- Uses only the selected radiomic columns together with the
+  identification/label variables.
+- Constructs the training, validation, and test partitions.
+- Fits a `RandomForestClassifier` on the feature subset.
+- Evaluates the model by calculating standard classification metrics and AUC-ROC.
+- Applies bootstrap to estimate confidence intervals for these metrics.
+- Saves reports and figures comparable to experiments without LASSO.
+
+Allows comparison of the impact of feature selection on
+Random Forest performance.
+"""
+
 # ==========================
 # 0. Carpeta de salida
 # ==========================

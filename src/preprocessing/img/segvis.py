@@ -2,6 +2,24 @@ import os
 import json
 from PIL import Image, ImageDraw
 
+"""
+Display segmentation polygons on the original images.
+
+This script:
+- Scans the patient folders in `data/processed`.
+- For each patient, it searches for the segmentation JSON files in `seg/json`
+  and the corresponding radiographic images in `img`.
+- Loads the geometry of the polygons from each JSON.
+- Opens the associated PNG image and draws the contours of the polygons on
+  it using `PIL.ImageDraw`, with reinforced red lines.
+- Saves the result in the `seg/vis` folder with the same base identifier,
+  allowing visual inspection of the segmentation quality.
+- Handles and reports exceptions when a valid image cannot be opened or saved.
+
+It is used as a quality control tool to review the masks
+and annotations of TOMPEI-CMMD superimposed on the original images.
+"""
+
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
 input_folder = os.path.join(REPO_ROOT, "data", "processed")

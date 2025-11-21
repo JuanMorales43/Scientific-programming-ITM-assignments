@@ -2,6 +2,24 @@ import os
 import pandas as pd
 import shutil
 
+"""
+Cleaning molecular subtypes and copying valid patient folders.
+
+This script:
+- Reads the `CMMD_clinicaldata_revision.xlsx` file located in `data/raw csv`.
+- Filters the DataFrame to discard records where the `subtype` is
+  null and the `classification` column is ‘Malignant’, avoiding malignant cases
+  without a defined subtype.
+- For each value of `ID1` in the filtered DataFrame, copies the corresponding folder
+  from `data/raw` to `data/raw csv`, preserving the
+  directory structure.
+- Uses `shutil.copytree` with `dirs_exist_ok=True` to update or create
+  the output folders.
+
+This is part of the preprocessing to obtain a subset of patients
+with consistent molecular subtype information.
+"""
+
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
 route_input_folder  = os.path.join (REPO_ROOT, "data", "raw")

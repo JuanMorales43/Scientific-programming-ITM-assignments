@@ -17,6 +17,27 @@ from sklearn.metrics import (
 )
 from sklearn.preprocessing import StandardScaler
 
+"""
+Training and evaluation of Naive Bayes using features selected by LASSO.
+
+This script:
+- Loads the CSV resulting from feature selection (e.g.,
+  `radiomics_lasso_subset.csv`) from `results/csv`.
+- Separates identification variables/labels from the selected radiomic columns
+  (remaining `original_*`).
+- Divides the dataset into training, validation, and
+  test partitions (or uses the partitions already defined in the CSV).
+- Fits a `GaussianNB` classifier on the selected features.
+- Calculate performance metrics (accuracy, sensitivity, specificity,
+  PPV/NPP, AUC-ROC, confusion matrix).
+- Use bootstrap resampling to estimate confidence intervals for the
+  metrics, including AUC-ROC.
+- Generate figures and reports in the associated results folder.
+
+The objective is to compare the performance of Naive Bayes with and without feature selection
+by LASSO.
+"""
+
 # ==========================
 # 0. Carpeta de salida
 # ==========================

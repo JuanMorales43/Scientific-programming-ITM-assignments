@@ -3,6 +3,28 @@ import json
 import numpy as np
 from PIL import Image, ImageDraw
 
+"""
+Generation of binary segmentation masks from JSON files.
+
+This script:
+- Defines the input path `data/processed`, where the
+  patient folders with their images and segmentations are located.
+- Implements the function `create_mask_from_json`, which interprets the
+  annotation polygons stored in a TOMPEI-CMMD JSON file.
+- Goes through all patient folders and, for each JSON file in
+  `seg/json`, calculates the reference dimensions corresponding to the
+  original image (PNG or TIFF).
+- Generates a binary mask of the same size as the reference image,
+  filling the interior of the polygons with a label value (255).
+- Save the masks in `seg/mask` in PNG and compressed TIFF format when
+  possible.
+- Display the progress and successfully processed cases on the console.
+
+This is a key step in obtaining segmentation masks in image format,
+which can be used in subsequent processes such as the extraction of
+radiomic features.
+"""
+
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
 input_folder = os.path.join(REPO_ROOT, "data", "processed")

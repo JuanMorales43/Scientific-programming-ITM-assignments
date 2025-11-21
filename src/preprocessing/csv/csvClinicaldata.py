@@ -1,5 +1,26 @@
 import os
 import pandas as pd
+
+"""
+Generation of filtered clinical CSVs from the TOMPEI-CMMD sheet.
+
+This script:
+- Locates the `data/raw` folder, where each subfolder corresponds to a patient ID
+  with their images.
+- Reads the Excel file `TOMPEI-CMMD_clinical_data_v01_20250121.xlsx`
+  located in `data/raw csv`.
+- Filters the “Imaging Diagnosis Details Sheet” to keep only those
+  records whose `ID` has a corresponding folder in `data/raw`.
+- Filters the “Lesion Details Sheet” using the `ID1` column in the same way.
+- Save two filtered CSV files in `results/csv`:
+  - `TOMPEI-CMMD_imaging_diagnosis_details.csv`
+  - `TOMPEI-CMMD_lesion_details.csv`
+
+This serves as a cleanup step to ensure that the clinical data is consistent with
+the image folders actually available in the repository.
+"""
+
+
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
 input_folder = os.path.join (REPO_ROOT, "data", "raw")

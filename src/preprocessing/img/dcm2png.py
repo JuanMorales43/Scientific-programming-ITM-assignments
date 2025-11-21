@@ -2,6 +2,26 @@ import os
 import pydicom
 from PIL import Image
 
+"""
+Conversion of DICOM files to PNG images by patient and view.
+
+This script:
+- Traverses the `data/processed` folder where each patient has a folder
+  with DICOM subfolders.
+- Opens each DICOM file with `pydicom`, extracts the laterality and view
+  (using `ImageLaterality` and `ViewCodeSequence`) and translates them using
+  the `view_dict` dictionary (CC, MLO, etc.).
+- Creates, if it does not exist, the `img` subfolder within each patient folder.
+- Convert the DICOM pixel array into a `PIL.Image` image.
+- Save the image as a PNG with the pattern
+  `<ID>_<Laterality>_<View>.png` inside `img`.
+- Display the path of each generated file and a message saying
+  “Conversion complete” on the console when finished.
+
+Used to obtain 2D images in PNG format from the original DICOM files
+of the study.
+"""
+
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
 input_folder = os.path.join(REPO_ROOT, "data", "processed")  # de aquí LEEMOS

@@ -17,6 +17,28 @@ from sklearn.metrics import (
 )
 from sklearn.preprocessing import StandardScaler
 
+"""
+Training and evaluation of an SVM classifier on radiomic features.
+
+This script:
+- Loads the complete CSV file `radiomics_merged.csv`.
+- Separates labels and identification from radiomic features
+  (`original_*`).
+- Standardizes features and builds training, validation, and test partitions.
+- Adjusts a Support Vector Machine (SVM) classifier with the
+  defined kernel and hyperparameters (e.g., `SVC` with probability).
+- Obtains predictions and probabilities for the evaluation sets.
+- Calculates performance metrics (accuracy, sensitivity, specificity,
+  predictive values, confusion matrix, AUC-ROC).
+- Uses bootstrap to obtain confidence intervals for the metrics,
+  including AUC-ROC.
+- Generates confusion matrix figures and ROC curves in the associated
+  results folder.
+
+It is used as one of the main classifiers to compare the
+discriminative power of radiomic features.
+"""
+
 # ==========================
 # 0. Carpeta de salida
 # ==========================

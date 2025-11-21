@@ -17,6 +17,26 @@ from sklearn.metrics import (
 )
 from sklearn.preprocessing import StandardScaler
 
+"""
+Training and evaluation of a Random Forest classifier on radiomic features.
+
+This script:
+- Loads `radiomics_merged.csv` from `results/csv`.
+- Separates the identification/label columns from the radiomic features
+  (`original_*`).
+- Partitions the data into training, validation, and test sets.
+- Fits a `RandomForestClassifier` model with the hyperparameters defined
+  in the code.
+- Obtains predictions and probabilities for the different sets.
+- Calculates performance metrics (accuracy, sensitivity, specificity,
+  predictive values, confusion matrix, AUC-ROC, etc.).
+- Estimates confidence intervals using bootstrap for key metrics.
+- Generates and saves visualizations such as confusion matrices and ROC curves.
+
+It serves to evaluate the performance of Random Forest within the set of
+supervised classifiers in the laboratory.
+"""
+
 # ==========================
 # 0. Carpeta de salida
 # ==========================

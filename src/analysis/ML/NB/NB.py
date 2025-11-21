@@ -17,6 +17,30 @@ from sklearn.metrics import (
 )
 from sklearn.preprocessing import StandardScaler
 
+"""
+Training and evaluation of a Gaussian Naive Bayes classifier.
+
+This script:
+- Loads the CSV `radiomics_merged.csv` from `results/csv`.
+- Separates the information columns (ID, labels, etc.) from the radiomic feature columns (`original_*`).
+- Divides the dataset into training, validation, and test partitions based on the `split` column (if available) or by stratified partitioning.
+- Divides the dataset into training, validation, and
+  test partitions based on the `split` column (if available) or by
+  stratified partitioning.
+- Fits a `GaussianNB` classifier on the training features.
+- Generates predictions and probabilities for the validation and
+  test sets.
+- Calculates metrics such as accuracy, sensitivity, specificity, PPV/NPV,
+  confusion matrix, and AUC-ROC.
+- Estimates confidence intervals using bootstrap resampling for various
+  metrics.
+- Generates and saves figures of the confusion matrix and ROC curve in the
+  corresponding results folder.
+
+It is part of the laboratory's supervised experiments set, using
+Naive Bayes as the base classifier.
+"""
+
 # ==========================
 # 0. Carpeta de salida
 # ==========================

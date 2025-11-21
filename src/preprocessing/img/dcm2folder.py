@@ -2,6 +2,29 @@ import os
 import pydicom
 import shutil
 
+"""
+Reorganization of DICOM files into folders by patient and view.
+
+This script:
+- Scans the `data/raw` folder for DICOM files.
+- For each DICOM file, reads the relevant metadata with `pydicom`:
+  - `PatientID` to identify the patient folder.
+  - `ImageLaterality` (L/R) and `ViewCodeSequence` to identify the view
+    (e.g., CC or MLO).
+- Creates, if they do not exist, output subfolders in `data/processed` with the
+  structure:
+    data/processed/<ID>/dcm
+- Renames and moves each DICOM file with the pattern
+  `<ID>_<Laterality>_<View>.dcm`.
+- Uses the `view_dict` dictionary to translate the view description
+  from PyDICOM to the abbreviated code (CC, MLO); if not recognized, uses `UNK`.
+- Print the movements made and a final message to the console when
+  the process is complete.
+
+This serves as the first step in organizing raw mammograms before
+their subsequent conversion to images and segmentations.
+"""
+
 # ==========================
 # 0. Rutas base
 # ==========================

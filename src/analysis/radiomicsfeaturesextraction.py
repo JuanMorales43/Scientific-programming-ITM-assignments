@@ -3,6 +3,27 @@ import pandas as pd
 from radiomics import featureextractor
 from pathlib import Path
 
+"""
+Module for extracting radiomic features with PyRadiomics.
+
+This script:
+- Defines the input path `data/processed`, which contains the images
+  (mammograms) organized by patient and view, and the associated
+  segmentation masks.
+- Configures a PyRadiomics extractor (binWidth, interpolator, normalization,
+  feature families, etc.).
+- Recursively traverses the patient folders to locate pairs
+  (image, mask) that match the defined naming pattern.
+- Runs the extractor on each image-mask pair, filtering the
+  diagnostic features (`diagnostics_*`) to retain only
+  the radiomic ones.
+- Adds the patient identifier (`PatientID`) to each record.
+- Builds a DataFrame with all the extracted features and saves it
+  as `radiomics_features.csv` in the `results/csv` folder.
+
+It is used as a feature extraction stage in the project's radiomic analysis pipeline.
+"""
+
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 input_folder = os.path.join (REPO_ROOT, "data", "processed")
 output_folder = os.path.join (REPO_ROOT, "results", "csv")

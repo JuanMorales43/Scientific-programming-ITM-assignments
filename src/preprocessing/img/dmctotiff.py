@@ -2,6 +2,26 @@ import os
 import pydicom
 from PIL import Image
 
+"""
+Converting DICOM files to TIFF images by patient and view.
+
+This script:
+- Scans the `data/processed` folder to locate patient folders
+  with DICOM files.
+- Reads each DICOM with `pydicom`, obtains the laterality and view, and uses
+  `view_dict` to map the description to codes such as CC or MLO.
+- Generates, if it does not exist, an `img` folder within each patient's folder
+.
+- Convert the pixel data from the DICOM into a `PIL.Image` image.
+- Save the image as a TIFF with the name
+  `<ID>_<Laterality>_<View>.tiff` in the `img` folder.
+- Write the path of each file created and a final message saying
+  “Conversion complete” to the console.
+
+Allows TIFF images (suitable for certain workflows and
+scientific tools) to be obtained from DICOM mammograms.
+"""
+
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
 input_folder = os.path.join(REPO_ROOT, "data", "processed")

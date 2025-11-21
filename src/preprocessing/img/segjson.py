@@ -1,5 +1,28 @@
 import os, re, shutil
 
+"""
+Copy and rename JSON segmentation files to the processed structure.
+
+This script:
+- Traverses the `data/processed` folder to build a dictionary that maps
+  the patient ID to their folder name.
+- Reads the original segmentation files in JSON format from
+  `data/raw/TOMPEI-CMMD-Segmentations`.
+- From the JSON file name, extracts the patient ID, view, and
+  laterality using regular expressions.
+- Locate the corresponding folder in `data/processed` and create the
+  `seg/json` subfolder within each patient if it does not exist.
+- Copy each JSON file to that location, renaming it according to the pattern
+  `<ID>_<Laterality>_<View>_AnnotationFile.json`.
+- (Optionally) allows internal references in the JSON to be corrected to the
+  original names, if the corresponding lines are uncommented.
+- Prints success or error messages for each processed file and a final one
+  when finished.
+
+Prepares the TOMPEI-CMMD segmentation files so that they have a
+structure and nomenclature consistent with the processed images.
+"""
+
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
 input_folder = os.path.join(REPO_ROOT, "data", "processed")
