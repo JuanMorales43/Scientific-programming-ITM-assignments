@@ -24,7 +24,7 @@ This is a key step in obtaining segmentation masks in image format,
 which can be used in subsequent processes such as the extraction of
 radiomic features.
 """
-
+# File paths
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
 input_folder = os.path.join(REPO_ROOT, "data", "processed")
@@ -34,10 +34,10 @@ def create_mask_from_json(json_path, size_wh):
     with open(json_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
-    # Recolectar polígonos como lista de [(x,y), ...]
+    # Get all polygons from the JSON data
     polygons = []
 
-    # Caso lista (tu JSON con cgPoints o points)
+    # 
     if isinstance(data, list):
         for ann in data:
             if isinstance(ann, dict):
@@ -52,9 +52,7 @@ def create_mask_from_json(json_path, size_wh):
                     if len(poly) >= 3:
                         polygons.append(poly)
 
-    # Caso dict (LabelMe / genérico / VGG)
     if isinstance(data, dict):
-        # LabelMe
         if isinstance(data.get('shapes'), list):
             for sh in data['shapes']:
                 pts = sh.get('points', [])
@@ -67,7 +65,6 @@ def create_mask_from_json(json_path, size_wh):
                             poly.append((int(round(p['x'])), int(round(p['y']))))
                     if len(poly) >= 3:
                         polygons.append(poly)
-        # Genérico {"polygons":[...]}
         if not polygons and isinstance(data.get('polygons'), list):
             for pts in data['polygons']:
                 if isinstance(pts, list) and len(pts) >= 3:
@@ -79,7 +76,6 @@ def create_mask_from_json(json_path, size_wh):
                             poly.append((int(round(p['x'])), int(round(p['y']))))
                     if len(poly) >= 3:
                         polygons.append(poly)
-        # VGG (top-level o anidado)
         if not polygons:
             regions = data.get('regions')
             if isinstance(regions, list):
@@ -99,7 +95,7 @@ def create_mask_from_json(json_path, size_wh):
                                 if len(xs) == len(ys) and len(xs) >= 3:
                                     polygons.append([(int(round(x)), int(round(y))) for x, y in zip(xs, ys)])
 
-    # Construir máscara binaria (0 fondo / 255 lesión)
+    # Build binary mask
     mask = Image.new('L', size_wh, 0)
     draw = ImageDraw.Draw(mask)
     for poly in polygons:
@@ -127,14 +123,13 @@ for paciente in os.listdir(input_folder):
         id_lv = fname.replace('_AnnotationFile.json', '')
         json_path = os.path.join(seg_json, fname)
 
-        # Imagen de referencia: PNG, luego TIFF/TIF
         png_path  = os.path.join(png_folder,  f'{id_lv}.png')
         tiff_path = os.path.join(tiff_folder, f'{id_lv}.tiff')
         tif_path  = os.path.join(tiff_folder, f'{id_lv}.tif')
 
         ref_path = png_path if os.path.exists(png_path) else (tiff_path if os.path.exists(tiff_path) else (tif_path if os.path.exists(tif_path) else None))
         if ref_path is None:
-            print(f'[Aviso] Imagen no encontrada para {id_lv}')
+            print(f'[Warning] Image not found {id_lv}')
             continue
 
         with Image.open(ref_path) as ref_im:
@@ -152,4 +147,4 @@ for paciente in os.listdir(input_folder):
         except Exception:
             mask_img.save(out_tiff)
 
-        print(f'[OK] {paciente}: {id_lv} → máscara guardada (PNG y TIFF)')
+        print(f'[OK] {paciente}: {id_lv} → Mask saved (PNG and TIFF)')

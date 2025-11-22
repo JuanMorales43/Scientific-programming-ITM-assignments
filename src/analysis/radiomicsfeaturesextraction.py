@@ -23,12 +23,12 @@ This script:
 
 It is used as a feature extraction stage in the project's radiomic analysis pipeline.
 """
-
+# File paths
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 input_folder = os.path.join (REPO_ROOT, "data", "processed")
 output_folder = os.path.join (REPO_ROOT, "results", "csv")
 out_csv_path = os.path.join (output_folder, "radiomics_features.csv")
-
+# Parameters for PyRadiomics
 params = {
     'binWidth': 10,
     'resampledPixelSpacing': None,
@@ -38,7 +38,7 @@ params = {
 }
 
 extractor = featureextractor.RadiomicsFeatureExtractor(**params)
-
+# Enable feature classes
 extractor.enableFeatureClassByName('shape2D')
 extractor.enableFeatureClassByName('firstorder')
 extractor.enableFeatureClassByName('glcm')
@@ -54,7 +54,7 @@ for patient_id in os.listdir(input_folder):
 
 imgs_path = []
 segs_path = []
-
+# Locate image-mask pairs
 for patient_id in patient_ids:
     seg_path = os.path.join(input_folder, patient_id, "seg", "mask")
     img_path = os.path.join(input_folder, patient_id, "img")
@@ -72,6 +72,7 @@ for patient_id in patient_ids:
             segs_path.append(os.path.join(seg_path, seg_file))
 
 all_features = []
+# Extract features
 for img, seg in zip(imgs_path, segs_path):
     print(f"Processing image: {img} with mask: {seg}")
     ID = Path(img).parts[-3]

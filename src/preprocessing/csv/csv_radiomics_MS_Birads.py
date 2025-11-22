@@ -22,48 +22,47 @@ This combined file is used as the main input for
 feature selection and supervised classification analyses.
 """
 
-
+# File paths
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-
 csv_subtype  = os.path.join (REPO_ROOT, "results", "csv", "CMMD_clinicaldata_revision_clean.csv")
 csv_radiomics= os.path.join (REPO_ROOT, "results", "csv", "radiomics_features.csv")
 csv_birads   = os.path.join (REPO_ROOT, "results", "csv", "TOMPEI-CMMD_imaging_diagnosis_details.csv")
 csv_output   = os.path.join (REPO_ROOT, "results", "csv", "radiomics_merged.csv")
 
-# Leer archivos
+# Read files
 df_radiomics = pd.read_csv(csv_radiomics, dtype=str)
 df_subtype   = pd.read_csv(csv_subtype, dtype=str)
 df_birads    = pd.read_csv(csv_birads, dtype=str)
 
-# (Opcional pero recomendado) normalizar IDs para evitar no-coincidencias
+# Normalize IDs
 df_radiomics["PatientID"] = df_radiomics["PatientID"].astype(str).str.strip().str.upper()
 df_subtype["ID"]          = df_subtype["ID1"].astype(str).str.strip().str.upper()
 df_birads["ID"]           = df_birads["ID"].astype(str).str.strip().str.upper()
 
-# Unir radiomics con subtype
+# Combine radiomics with subtype
 df_merged = df_radiomics.merge(
     df_subtype[['ID', 'classification', 'subtype']].drop_duplicates('ID'),
     left_on='PatientID', right_on='ID', how='left'
 )
 
-# Unir con birads (los sufijos crean classification_cmmd y classification_tompei)
+# Join with birads (the suffixes create classification_cmmd and classification_tompei)
 df_merged = df_merged.merge(
     df_birads[['ID', 'classification', 'BI-RADS']].drop_duplicates('ID'),
     left_on='PatientID', right_on='ID', how='left', suffixes=('_cmmd', '_tompei')
 )
 
-# Usar el ID de subtype como identificador principal
+# Use the subtype ID as the primary identifier
 df_merged['ID'] = df_merged['ID_cmmd']
 
-# Eliminar columnas de PatientID y IDs extra
+# Remove PatientID and extra ID columns
 df_merged.drop(columns=['PatientID', 'ID_cmmd', 'ID_tompei'], inplace=True)
 
-# Reordenar columnas al inicio
+# Reorder new columns at the beginning
 cols_inicio = ['ID', 'classification_cmmd', 'classification_tompei',  'subtype', 'BI-RADS']
 cols_inicio = [c for c in cols_inicio if c in df_merged.columns]  # por si acaso
 cols_restantes = [c for c in df_merged.columns if c not in cols_inicio]
 df_merged = df_merged[cols_inicio + cols_restantes]
 
-# Guardar CSV
+# Save CSV
 df_merged.to_csv(csv_output, index=False)
 print(f"CSV generado en: {csv_output}")

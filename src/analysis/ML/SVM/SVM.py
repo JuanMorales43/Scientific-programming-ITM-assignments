@@ -38,23 +38,15 @@ This script:
 It is used as one of the main classifiers to compare the
 discriminative power of radiomic features.
 """
-
-# ==========================
-# 0. Carpeta de salida
-# ==========================
+# Path files
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
 output_dir = os.path.join(REPO_ROOT,"results", "ML", "SVM")
 csv_dir = os.path.join (REPO_ROOT, "results", "csv")
 os.makedirs(output_dir, exist_ok=True)
-
-# ==========================
-# 1. Cargar datos
-# ==========================
 ruta_csv_radiomics = os.path.join (csv_dir, "radiomics_merged.csv")
 ruta_csv_BN = os.path.join (csv_dir, "BN_cercanos.csv")
 ruta_csv_TN = os.path.join (csv_dir, "TN_cercanos.csv")
 
-# ⚠️ Ajusta esta ruta si tu splits.csv está en otro sitio
 ruta_splits = os.path.join (csv_dir, "splits.csv")
 
 df_radiomics = pd.read_csv(ruta_csv_radiomics)
@@ -62,32 +54,28 @@ df_bn = pd.read_csv(ruta_csv_BN)
 df_tn = pd.read_csv(ruta_csv_TN)
 df_splits = pd.read_csv(ruta_splits)
 
-# IDs de pacientes
+# Patients IDs
 bn_ids = set(df_bn['Pacientes BN'])
 tn_ids = set(df_tn['Paciente TN'])
 
-# Filtrar pacientes BN y TN en radiomics
+# Filter radiomics for BN and TN
 df_bn_radiomics = df_radiomics[df_radiomics['ID'].isin(bn_ids)].copy()
 df_tn_radiomics = df_radiomics[df_radiomics['ID'].isin(tn_ids)].copy()
 
-# Etiquetas: 0 = BN, 1 = TN
+# Labels: 0 = BN, 1 = TN
 df_bn_radiomics['label'] = 0
 df_tn_radiomics['label'] = 1
 
-# Unir ambos grupos
+# Merge both
 df_all = pd.concat([df_bn_radiomics, df_tn_radiomics], ignore_index=True)
 
-# ==========================
-# 2. Unir con splits.csv para asignar train/val/test
-# ==========================
-# Nos quedamos solo con ID y split desde splits.csv
-# (si tiene label también, no pasa nada)
+# Merge with splits
 df_merged = df_all.merge(df_splits[['ID', 'split']], on='ID', how='inner')
 
-# Features radiómicas
+# Features columns
 feature_cols = [col for col in df_merged.columns if col.startswith('original_')]
 
-# Separar por split
+# Split data
 df_train = df_merged[df_merged['split'] == 'train']
 df_val   = df_merged[df_merged['split'] == 'val']
 df_test  = df_merged[df_merged['split'] == 'test']
@@ -103,32 +91,26 @@ y_test  = df_test['label']
 
 print("Tamaños:", X_train.shape, X_val.shape, X_test.shape)
 
-# ==========================
-# 3. Normalizar con Z-score (fit SOLO en train)
-# ==========================
+# Normalization Z-score
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_val   = scaler.transform(X_val)
 X_test  = scaler.transform(X_test)
 
-# ==========================
-# 4. Entrenar SVM en TRAIN
-# ==========================
+# Training SVM
 clf = SVC(kernel='linear', random_state=42, probability=True)
 clf.fit(X_train, y_train)
 
-# ==========================
-# 5. Evaluar en VALIDACIÓN
-# ==========================
+# Evaluation on validation set
 y_pred = clf.predict(X_val)
-y_pred_proba = clf.predict_proba(X_val)[:, 1]  # prob de TN = 1
+y_pred_proba = clf.predict_proba(X_val)[:, 1]
 
 print("\n=== Resultados en VALIDACIÓN ===")
 accuracy = accuracy_score(y_val, y_pred)
 print("Accuracy:", accuracy)
 print(classification_report(y_val, y_pred, target_names=['BN', 'TN']))
 
-# Métricas puntuales
+# Metrics
 vpp_tn  = precision_score(y_val, y_pred, pos_label=1)
 aucroc  = roc_auc_score(y_val, y_pred_proba)
 sens_tn = recall_score(y_val, y_pred, pos_label=1)
@@ -141,9 +123,7 @@ print(f"Sensibilidad TN: {sens_tn:.4f}")
 print(f"Especificidad BN: {esp_bn:.4f}")
 print(f"F1 TN: {f1_tn:.4f}")
 
-# ==========================
-# 6. Matriz de confusión (guardar)
-# ==========================
+# Confusion Matrix
 cm = confusion_matrix(y_val, y_pred)
 fig_cm, ax_cm = plt.subplots()
 disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['BN', 'TN'])
@@ -154,9 +134,7 @@ cm_path = os.path.join(output_dir, "matriz_confusion.png")
 fig_cm.savefig(cm_path, dpi=300, bbox_inches='tight')
 plt.close(fig_cm)
 
-# ==========================
-# 7. Curva ROC (guardar)
-# ==========================
+# Roc Curve
 fig_roc, ax_roc = plt.subplots()
 RocCurveDisplay.from_predictions(y_val, y_pred_proba, name='SVM', pos_label=1, ax=ax_roc)
 ax_roc.plot([0, 1], [0, 1], '--', label='Azar')
@@ -167,9 +145,7 @@ roc_path = os.path.join(output_dir, "aucroc.png")
 fig_roc.savefig(roc_path, dpi=300, bbox_inches='tight')
 plt.close(fig_roc)
 
-# ==========================
-# 8. Bootstrap: intervalos de confianza
-# ==========================
+# Confidence Intervals via Bootstrap
 def bootstrap_ci_metric(y_true, y_pred, metric_func, n_bootstraps=1000, alpha=0.95, random_state=42):
     rng = np.random.RandomState(random_state)
     y_true = np.asarray(y_true)
@@ -178,7 +154,7 @@ def bootstrap_ci_metric(y_true, y_pred, metric_func, n_bootstraps=1000, alpha=0.
     stats = []
 
     for _ in range(n_bootstraps):
-        idx = rng.randint(0, n, n)  # con reemplazo
+        idx = rng.randint(0, n, n)
         y_bs = y_true[idx]
         p_bs = y_pred[idx]
         stats.append(metric_func(y_bs, p_bs))
@@ -200,7 +176,6 @@ def ci_auc_bootstrap(y_true, y_score, n_bootstraps=1000, alpha=0.95, random_stat
         y_bs = y_true[idx]
         s_bs = y_score[idx]
 
-        # necesitamos ambas clases
         if len(np.unique(y_bs)) < 2:
             continue
 
@@ -248,9 +223,7 @@ print(f"IC95% Sensibilidad_TN: [{sens_low:.4f}, {sens_up:.4f}]")
 print(f"IC95% Especificidad_BN: [{esp_low:.4f}, {esp_up:.4f}]")
 print(f"IC95% F1_TN: [{f1_low:.4f}, {f1_up:.4f}]")
 
-# ==========================
-# 9. Guardar métricas en CSV (agrupadas)
-# ==========================
+# Save metrics to CSV
 metrics_df = pd.DataFrame({
     'Metric': [
         'Accuracy_CI_lower_bound',

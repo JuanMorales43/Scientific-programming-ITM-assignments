@@ -21,16 +21,17 @@ This script:
 Used to obtain 2D images in PNG format from the original DICOM files
 of the study.
 """
-
+# File paths
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
-input_folder = os.path.join(REPO_ROOT, "data", "processed")  # de aquí LEEMOS
+input_folder = os.path.join(REPO_ROOT, "data", "processed")  
 
 view_dict = {
     "CC": "cranio-caudal",
     "MLO": "medio-lateral oblique"
 }
 
+# Process each patient folder
 for folder_name in os.listdir(input_folder):
     folder_path = os.path.join(input_folder, folder_name)
     if os.path.isdir(folder_path):
@@ -40,7 +41,7 @@ for folder_name in os.listdir(input_folder):
             if file_name.endswith(".dcm"):
                 dicom_path = os.path.join(folder_path, file_name)
                 ds = pydicom.dcmread(dicom_path)
-                # Obtener lateralidad y vista
+                # Extract laterality and view
                 lateralidad = ds.ImageLaterality
                 code_meaning = ds.ViewCodeSequence[0].CodeMeaning
                 vista = None
@@ -48,10 +49,10 @@ for folder_name in os.listdir(input_folder):
                     if value == code_meaning:
                         vista = key
                         break
-                # Convertir a imagen y guardar como PNG
+                # Convert to PNG
                 img = Image.fromarray(ds.pixel_array)
                 png_name = f"{folder_name}_{lateralidad}_{vista}.png"
                 png_path = os.path.join(img_dir, png_name)
                 img.save(png_path)
-                print(f"Guardado: {png_path}")
-print("Conversión completada.")
+                print(f"Saved: {png_path}")
+print("Conversion complete.")

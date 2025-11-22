@@ -20,19 +20,20 @@ This is part of the preprocessing to obtain a subset of patients
 with consistent molecular subtype information.
 """
 
+# File paths
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
 route_input_folder  = os.path.join (REPO_ROOT, "data", "raw")
 route_output_folder = os.path.join (REPO_ROOT, "data", "raw csv")
 csv_file            = os.path.join (route_output_folder, "CMMD_clinicaldata_revision.xlsx")
 
-# Leer el archivo CSV/Excel
+# Read the Excel file
 df = pd.read_excel(csv_file)
 
-# Filtrar: ignorar donde subtype es nulo y classification es 'Malignant'
+# Filter out records with null subtype and classification 'Malignant'
 filtered_df = df[~(df['subtype'].isnull() & (df['classification'] == 'Malignant'))]
 
-# Copiar carpetas que coincidan con el valor de la columna ID1
+# Copy corresponding folders for each valid ID1
 for folder_name in filtered_df['ID1']:
     src = os.path.join(route_input_folder, str(folder_name))
     dst = os.path.join(route_output_folder, str(folder_name))

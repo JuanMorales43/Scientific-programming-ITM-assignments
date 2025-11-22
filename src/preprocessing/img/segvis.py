@@ -20,10 +20,12 @@ It is used as a quality control tool to review the masks
 and annotations of TOMPEI-CMMD superimposed on the original images.
 """
 
+# File paths
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
 input_folder = os.path.join(REPO_ROOT, "data", "processed")
 
+# Process each patient folder
 for patient in os.listdir(input_folder):
     patient_path = os.path.join(input_folder, patient)
     if not os.path.isdir(patient_path):
@@ -34,7 +36,7 @@ for patient in os.listdir(input_folder):
     png_folder  = os.path.join(patient_path, "png")
 
     if not os.path.exists(json_folder):
-        print(f"[Aviso] No existe la carpeta JSON para {patient}")
+        print(f"[Warning] No Json {patient}")
         continue
 
     os.makedirs(vis_folder, exist_ok=True)
@@ -49,23 +51,20 @@ for patient in os.listdir(input_folder):
         vis_path = os.path.join(vis_folder, f"{id_lat_view}_segvis.png")
 
         if not os.path.exists(png_path):
-            print(f"[Aviso] No existe la imagen PNG: {png_path}")
+            print(f"[Warning] Image PNG do not exist: {png_path}")
             continue
 
-        # Cargar JSON (puede ser dict o lista)
         try:
             with open(json_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
         except Exception as e:
-            print(f"[ERROR] JSON inválido {json_path}: {e}")
+            print(f"[ERROR] JSON Wrong {json_path}: {e}")
             continue
 
-        # ======== Extraer polígonos en formato [(x,y), ...] ========
+        # Extract polygons from JSON
         polygons = []
 
-        # Caso: dict (LabelMe: shapes; Genérico: polygons; VGG: regions)
         if isinstance(data, dict):
-            # LabelMe: {"shapes":[{"points":[[x,y],...]}, ...]}
             if "shapes" in data and isinstance(data["shapes"], list):
                 for sh in data["shapes"]:
                     pts = sh.get("points", [])
@@ -79,7 +78,6 @@ for patient in os.listdir(input_folder):
                         if len(poly) >= 3:
                             polygons.append(poly)
 
-            # Genérico: {"polygons":[[(x,y),...], ...]}
             if not polygons and "polygons" in data and isinstance(data["polygons"], list):
                 for pts in data["polygons"]:
                     if isinstance(pts, list) and len(pts) >= 3:
@@ -92,7 +90,6 @@ for patient in os.listdir(input_folder):
                         if len(poly) >= 3:
                             polygons.append(poly)
 
-            # VGG VIA: {"regions":[{"shape_attributes":{"name":"polygon","all_points_x":[...],"all_points_y":[...]}}]}
             if not polygons:
                 # top-level regions
                 if "regions" in data and isinstance(data["regions"], list):
@@ -106,7 +103,7 @@ for patient in os.listdir(input_folder):
                                 for x, y in zip(xs, ys):
                                     poly.append((float(x), float(y)))
                                 polygons.append(poly)
-                # nested dict-of-items con regions adentro
+                # nested dict-of-items with regions
                 if not polygons:
                     for _, v in data.items():
                         if isinstance(v, dict) and isinstance(v.get("regions"), list):
@@ -121,7 +118,6 @@ for patient in os.listdir(input_folder):
                                             poly.append((float(x), float(y)))
                                         polygons.append(poly)
 
-        # Caso: lista (tu JSON con items que tienen cgPoints o points)
         if isinstance(data, list):
             for ann in data:
                 if isinstance(ann, dict):
@@ -142,21 +138,20 @@ for patient in os.listdir(input_folder):
                             polygons.append(poly)
 
         if not polygons:
-            print(f"[Aviso] No hay polígonos en: {json_path}")
+            print(f"[Warning]: {json_path}")
             continue
-        # ===========================================================
 
-        # Dibuja en rojo sobre la PNG original
+        # Draw polygons on the image
         try:
             with Image.open(png_path).convert("RGB") as img:
                 draw = ImageDraw.Draw(img)
                 for poly in polygons:
-                    # contorno rojo y línea reforzada (3 px)
+                    # Draw polygon outline with reinforced lines
                     draw.polygon(poly, outline=(255, 0, 0))
                     poly_closed = poly + [poly[0]]
                     for i in range(len(poly_closed) - 1):
                         draw.line([poly_closed[i], poly_closed[i+1]], fill=(255, 0, 0), width=3)
                 img.save(vis_path)
-            print(f"[OK] Guardado: {vis_path}")
+            print(f"[OK] Saved: {vis_path}")
         except Exception as e:
-            print(f"[ERROR] Dibujando/guardando {vis_path}: {e}")
+            print(f"[ERROR] Drawing/Saving {vis_path}: {e}")
