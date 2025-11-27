@@ -1,0 +1,11 @@
+ID1,LeftRight,Age,number,abnormality,classification,subtype
+D1-0001,R,44,2,calcification,Benign,
+D1-0002,L,40,2,calcification,Benign,
+D1-0003,L,39,2,calcification,Benign,
+D1-0004,L,41,2,calcification,Benign,
+D1-0005,R,42,2,calcification,Benign,
+D2-0013,L,57,2,calcification,Malignant,triple negative
+D2-0023,L,41,2,calcification,Malignant,triple negative
+D2-0047,R,35,2,calcification,Malignant,triple negative
+D2-0097,L,56,2,calcification,Malignant,triple negative
+D2-0126,R,51,2,both,Malignant,triple negative

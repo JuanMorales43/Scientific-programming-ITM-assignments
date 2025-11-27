@@ -1,5 +1,10 @@
 # Lab 3 – Radiomics and Machine Learning for Breast Cancer (CMMD)
 
+## Important
+
+A practical warning is necessary regarding the execution of the scripts contained in the *preprocessing* folder. Due to the current impossibility of loading and processing the complete cohort of patients (i.e., all image folders and associated clinical data), running these scripts in a partial or incomplete dataset configuration may lead to missing files, empty tables, or misaligned identifiers, which can in turn propagate errors or inconsistencies to the subsequent stages of the pipeline (e.g., radiomics extraction, merging of clinical data, or machine learning analysis). These preprocessing routines were designed and validated under the assumption that the full set of patients is available and correctly structured; therefore, any attempt to execute them with a reduced or incomplete dataset should be done with caution and, ideally, after adapting the paths and filters to the specific subset being used.
+
+
 ## 1. Project overview
 
 This repository contains the code and resources for **Lab 3** of the *Scientific Programming* course.  

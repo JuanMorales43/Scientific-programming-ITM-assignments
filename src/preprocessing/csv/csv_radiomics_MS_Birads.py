@@ -24,7 +24,7 @@ feature selection and supervised classification analyses.
 
 # File paths
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-csv_subtype  = os.path.join (REPO_ROOT, "results", "csv", "CMMD_clinicaldata_revision_clean.csv")
+csv_subtype  = os.path.join (REPO_ROOT, "results", "csv", "CMMD_clinicaldata_revision_filtered.csv")
 csv_radiomics= os.path.join (REPO_ROOT, "results", "csv", "radiomics_features.csv")
 csv_birads   = os.path.join (REPO_ROOT, "results", "csv", "TOMPEI-CMMD_imaging_diagnosis_details.csv")
 csv_output   = os.path.join (REPO_ROOT, "results", "csv", "radiomics_merged.csv")
@@ -47,7 +47,7 @@ df_merged = df_radiomics.merge(
 
 # Join with birads (the suffixes create classification_cmmd and classification_tompei)
 df_merged = df_merged.merge(
-    df_birads[['ID', 'classification', 'BI-RADS']].drop_duplicates('ID'),
+    df_birads[['ID', 'classification', 'Unnamed: 21']].drop_duplicates('ID'),
     left_on='PatientID', right_on='ID', how='left', suffixes=('_cmmd', '_tompei')
 )
 
